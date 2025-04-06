@@ -1,61 +1,59 @@
 package shared
 
-type paginatore[T any] struct {
-	pageSize int64
-	total    int64
-	page     int64
-	data     T
+type Paginator[T any] struct {
+	PageSize int64
+	Total    int64
+	Page     int64
+	Data     T
 }
 
-type Paginatore[T any] interface {
-	Paginate() ListResponse[T]
-	getNextPage() int64
-	getTotalPage() int64
-	Validate() (int64, int64)
+type ListResponse[T any] struct {
+	Total     int64 `json:"total"`
+	Page      int64 `json:"page"`
+	NextPage  int64 `json:"next_page"`
+	TotalPage int64 `json:"total_page"`
+	Result    T     `json:"result"`
 }
 
-func NewPaginator[T any](total int64, page, pageSize int64, data T) Paginatore[T] {
-	return &paginatore[T]{
-		pageSize: pageSize,
-		total:    total,
-		page:     page,
-		data:     data,
+func NewPaginator[T any](total int64, page, pageSize int64, data T) *Paginator[T] {
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 10
+	}
+	return &Paginator[T]{
+		PageSize: pageSize,
+		Total:    total,
+		Page:     page,
+		Data:     data,
 	}
 }
 
-func (p *paginatore[T]) Validate() (int64, int64) {
-	if p.page < 1 {
-		p.page = 1
+func (p *Paginator[T]) GetNextPage() int64 {
+	if p.Page < p.GetTotalPage() {
+		return p.Page + 1
 	}
-	if p.pageSize < 1 {
-		p.pageSize = 10
-	}
-	return p.page, p.pageSize
+	return p.Page
 }
 
-func (p *paginatore[T]) getNextPage() int64 {
-	if p.page < p.getTotalPage() {
-		return p.page + 1
-	}
-
-	return p.page
-}
-
-func (p *paginatore[T]) getTotalPage() int64 {
-	t := p.total / p.pageSize
-	if t == 0 {
+func (p *Paginator[T]) GetTotalPage() int64 {
+	if p.Total == 0 {
 		return 1
 	}
-	return t
+	totalPages := p.Total / p.PageSize
+	if p.Total%p.PageSize != 0 {
+		totalPages++
+	}
+	return totalPages
 }
 
-func (p *paginatore[T]) Paginate() ListResponse[T] {
-	p.Validate()
+func (p *Paginator[T]) Paginate() ListResponse[T] {
 	return ListResponse[T]{
-		Total:     p.total,
-		Page:      p.page,
-		NextPage:  p.getNextPage(),
-		TotalPage: p.getTotalPage(),
-		Result:    p.data,
+		Total:     p.Total,
+		Page:      p.Page,
+		NextPage:  p.GetNextPage(),
+		TotalPage: p.GetTotalPage(),
+		Result:    p.Data,
 	}
 }
