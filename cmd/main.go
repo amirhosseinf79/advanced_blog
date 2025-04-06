@@ -30,6 +30,7 @@ func main() {
 
 	authMiddleware := middleware.NewTokenMiddleware(tokenUseCase)
 	postAuthMiddleware := middleware.NewPostAuthorMiddleware(postUseCase)
+	paginationMiddleware := middleware.NewPaginationMiddleware()
 
 	tokenHandler := handlers.NewTokenHandler(tokenUseCase)
 	userHandler := handlers.NewUserHandler(userUseCase)
@@ -39,6 +40,7 @@ func main() {
 	server := server.NewServer(
 		authMiddleware,
 		postAuthMiddleware,
+		paginationMiddleware,
 		tokenHandler,
 		userHandler,
 		postHandler,

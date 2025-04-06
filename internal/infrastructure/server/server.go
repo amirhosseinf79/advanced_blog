@@ -13,6 +13,7 @@ type server struct {
 	app                  *fiber.App
 	authMiddleware       middleware.AuthMiddleware
 	postAuthorMiddleware middleware.PostAuthorMiddleware
+	paginationMiddleware middleware.PaginationMiddleware
 	tokenHandler         handlers.TokenHandler
 	userHandler          handlers.UserHandler
 	postHandler          handlers.PostHandler
@@ -22,6 +23,7 @@ type server struct {
 func NewServer(
 	authMiddleware middleware.AuthMiddleware,
 	postAuthorMiddleware middleware.PostAuthorMiddleware,
+	paginationMiddleware middleware.PaginationMiddleware,
 	tokenHandler handlers.TokenHandler,
 	userHandler handlers.UserHandler,
 	postHandler handlers.PostHandler,
@@ -36,6 +38,7 @@ func NewServer(
 		app:                  app,
 		authMiddleware:       authMiddleware,
 		postAuthorMiddleware: postAuthorMiddleware,
+		paginationMiddleware: paginationMiddleware,
 		tokenHandler:         tokenHandler,
 		userHandler:          userHandler,
 		postHandler:          postHandler,

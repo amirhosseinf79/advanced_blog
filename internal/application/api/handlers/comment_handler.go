@@ -23,6 +23,9 @@ func (h *commentHnadler) GetComments(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
+	filter.Page = c.Locals("page").(int64)
+	filter.PageSize = c.Locals("page_size").(int64)
+
 	comments, total, err := h.commentService.AllPostComments(filter)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{

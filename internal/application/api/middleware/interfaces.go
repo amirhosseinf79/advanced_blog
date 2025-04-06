@@ -9,3 +9,7 @@ type AuthMiddleware interface {
 type PostAuthorMiddleware interface {
 	AuthorizePostAuthor(c fiber.Ctx) error
 }
+
+type PaginationMiddleware interface {
+	PaginationCheck(c fiber.Ctx) error
+}

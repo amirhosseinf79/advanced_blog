@@ -76,12 +76,8 @@ func (h *postHandler) GetAllPosts(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
-	if filter.Page == 0 {
-		filter.Page = 1
-	}
-	if filter.PageSize == 0 {
-		filter.PageSize = 10
-	}
+	filter.Page = c.Locals("page").(int64)
+	filter.PageSize = c.Locals("page_size").(int64)
 
 	posts, total, err := h.postService.GetAllPosts(filter)
 	if err != nil || len(posts) == 0 {

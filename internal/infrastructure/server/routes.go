@@ -11,15 +11,12 @@ func (s *server) SetupRoutes() {
 	auth.Post("/register", s.userHandler.RegisterUser)
 	auth.Post("/login", s.userHandler.LoginUser)
 
-	comments.Get("/", s.commentHandler.GetComments)
-
-	post.Get("/", s.postHandler.GetAllPosts)
+	comments.Get("/", s.commentHandler.GetComments, s.paginationMiddleware.PaginationCheck)
+	post.Get("/", s.postHandler.GetAllPosts, s.paginationMiddleware.PaginationCheck)
 	post.Get("/:id", s.postHandler.GetPostByID)
 
 	post.Use(s.authMiddleware.TokenAuthMiddleware)
 	post.Post("/add", s.postHandler.CreatePost)
 	comments.Post("/add", s.commentHandler.AddComment)
-
-	post.Use(s.postAuthorMiddleware.AuthorizePostAuthor)
-	post.Put("/update/:id", s.postHandler.UpdatePost)
+	post.Put("/update/:id", s.postHandler.UpdatePost, s.postAuthorMiddleware.AuthorizePostAuthor)
 }
