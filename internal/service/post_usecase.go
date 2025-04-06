@@ -36,7 +36,7 @@ func (p *postUseCase) GetPostByID(id string) (*models.Post, error) {
 	return p.postRepo.GetPostByID(id)
 }
 
-func (p *postUseCase) GetAllPosts(filter dto.PostFilterDTO) ([]*models.Post, error) {
-	posts, err := p.postRepo.GetPostsByFilter(filter)
-	return posts, err
+func (p *postUseCase) GetAllPosts(filter dto.PostFilterDTO) (posts []*models.Post, total int64, err error) {
+	posts, total, err = p.postRepo.GetPostsByFilter(filter)
+	return
 }

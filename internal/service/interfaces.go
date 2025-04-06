@@ -7,14 +7,14 @@ import (
 
 type CommentService interface {
 	AddComment(input dto.CommentCreateDTO) (*models.Comment, error)
-	AllPostComments(filter dto.CommentFilter) ([]*models.Comment, error)
+	AllPostComments(filter dto.CommentFilter) ([]*models.Comment, int64, error)
 }
 
 type PostService interface {
 	CreatePost(input dto.PostCreateDTO) (*models.Post, error)
 	UpdatePost(input dto.PostUpdateDTO) (*models.Post, error)
 	GetPostByID(id string) (*models.Post, error)
-	GetAllPosts(filter dto.PostFilterDTO) ([]*models.Post, error)
+	GetAllPosts(filter dto.PostFilterDTO) ([]*models.Post, int64, error)
 }
 
 type TokenService interface {

@@ -12,5 +12,5 @@ type PostRepository interface {
 	UpdatePost(post *models.Post) error
 	DeletePost(id string) error
 	GetPostsByAuthorID(authorID int) ([]*models.Post, error)
-	GetPostsByFilter(filter dto.PostFilterDTO) ([]*models.Post, error)
+	GetPostsByFilter(filter dto.PostFilterDTO) ([]*models.Post, int64, error)
 }

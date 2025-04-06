@@ -55,8 +55,7 @@ func (r *postRepository) GetPostsByAuthorID(authorID int) ([]*models.Post, error
 	return posts, nil
 }
 
-func (r *postRepository) GetPostsByFilter(filter dto.PostFilterDTO) ([]*models.Post, error) {
-	posts := []*models.Post{}
+func (r *postRepository) GetPostsByFilter(filter dto.PostFilterDTO) (posts []*models.Post, total int64, err error) {
 	query := r.db.Model(&models.Post{}).Preload("Author")
 
 	if filter.AuthorName != "" {
@@ -66,10 +65,10 @@ func (r *postRepository) GetPostsByFilter(filter dto.PostFilterDTO) ([]*models.P
 	if filter.Title != "" {
 		query = query.Where("LOWER(posts.title) LIKE LOWER(?)", "%"+filter.Title+"%")
 	}
-	err := query.Find(&posts).Error
+	err = query.Count(&total).Offset(int(filter.Page - 1)).Limit(int(filter.PageSize)).Find(&posts).Error
 
 	if err != nil {
-		return nil, err
+		return
 	}
-	return posts, nil
+	return
 }

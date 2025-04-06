@@ -20,6 +20,8 @@ type PostUpdateDTO struct {
 type PostFilterDTO struct {
 	Title      string `json:"title" query:"title"`
 	AuthorName string `json:"author_name" query:"author_name"`
+	Page       int64  `json:"page" query:"page" validate:"gte=1,required"`
+	PageSize   int64  `json:"page_size" query:"page_size" validate:"gte=1,required"`
 }
 
 type PostResponse struct {

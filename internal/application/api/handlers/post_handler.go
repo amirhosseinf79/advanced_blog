@@ -6,6 +6,7 @@ import (
 	"github.com/amirhosseinf79/advanced_blog/internal/domain/models"
 	"github.com/amirhosseinf79/advanced_blog/internal/dto"
 	"github.com/amirhosseinf79/advanced_blog/internal/service"
+	"github.com/amirhosseinf79/advanced_blog/internal/shared"
 	"github.com/gofiber/fiber/v3"
 )
 
@@ -75,7 +76,7 @@ func (h *postHandler) GetAllPosts(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
-	posts, err := h.postService.GetAllPosts(filter)
+	posts, total, err := h.postService.GetAllPosts(filter)
 	if err != nil || len(posts) == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": "Posts not found",
@@ -95,7 +96,13 @@ func (h *postHandler) GetAllPosts(c fiber.Ctx) error {
 		postResponses = append(postResponses, postResponse)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(postResponses)
+	paginator := shared.NewPaginator(
+		total,
+		filter.Page,
+		filter.PageSize,
+		postResponses,
+	)
+	return c.Status(fiber.StatusOK).JSON(paginator.Paginate())
 }
 
 func (h *postHandler) UpdatePost(c fiber.Ctx) error {

@@ -4,6 +4,7 @@ import (
 	"github.com/amirhosseinf79/advanced_blog/internal/domain/models"
 	"github.com/amirhosseinf79/advanced_blog/internal/dto"
 	"github.com/amirhosseinf79/advanced_blog/internal/service"
+	"github.com/amirhosseinf79/advanced_blog/internal/shared"
 	"github.com/gofiber/fiber/v3"
 )
 
@@ -22,7 +23,7 @@ func (h *commentHnadler) GetComments(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(response)
 	}
 
-	comments, err := h.commentService.AllPostComments(filter)
+	comments, total, err := h.commentService.AllPostComments(filter)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
@@ -47,7 +48,9 @@ func (h *commentHnadler) GetComments(c fiber.Ctx) error {
 		}
 		commentList = append(commentList, data)
 	}
-	return c.JSON(commentList)
+
+	paginator := shared.NewPaginator(total, filter.Page, filter.PageSize, commentList)
+	return c.JSON(paginator.Paginate())
 }
 
 func (h *commentHnadler) AddComment(c fiber.Ctx) error {

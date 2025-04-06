@@ -24,7 +24,7 @@ func (uc *commentUseCase) AddComment(input dto.CommentCreateDTO) (comment *model
 	return
 }
 
-func (uc *commentUseCase) AllPostComments(filter dto.CommentFilter) (comments []*models.Comment, err error) {
-	comments, err = uc.comentRepo.AllPostComments(filter.PostID)
+func (uc *commentUseCase) AllPostComments(filter dto.CommentFilter) (comments []*models.Comment, total int64, err error) {
+	comments, total, err = uc.comentRepo.AllPostComments(filter)
 	return
 }
