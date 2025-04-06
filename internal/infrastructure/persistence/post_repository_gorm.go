@@ -4,6 +4,7 @@ import (
 	"github.com/amirhosseinf79/advanced_blog/internal/domain/models"
 	"github.com/amirhosseinf79/advanced_blog/internal/domain/repositories"
 	"github.com/amirhosseinf79/advanced_blog/internal/dto"
+	"github.com/amirhosseinf79/advanced_blog/internal/shared"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -65,7 +66,8 @@ func (r *postRepository) GetPostsByFilter(filter dto.PostFilterDTO) (posts []*mo
 	if filter.Title != "" {
 		query = query.Where("LOWER(posts.title) LIKE LOWER(?)", "%"+filter.Title+"%")
 	}
-	err = query.Count(&total).Offset(int(filter.Page - 1)).Limit(int(filter.PageSize)).Find(&posts).Error
+	page, pageSize := shared.NewPaginator(0, filter.Page, filter.PageSize, posts).Validate()
+	err = query.Count(&total).Offset(int(page - 1)).Limit(int(pageSize)).Find(&posts).Error
 
 	if err != nil {
 		return

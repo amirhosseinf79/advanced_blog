@@ -11,6 +11,7 @@ type Paginatore[T any] interface {
 	Paginate() ListResponse[T]
 	getNextPage() int64
 	getTotalPage() int64
+	Validate() (int64, int64)
 }
 
 func NewPaginator[T any](total int64, page, pageSize int64, data T) Paginatore[T] {
@@ -20,6 +21,16 @@ func NewPaginator[T any](total int64, page, pageSize int64, data T) Paginatore[T
 		page:     page,
 		data:     data,
 	}
+}
+
+func (p *paginatore[T]) Validate() (int64, int64) {
+	if p.page < 1 {
+		p.page = 1
+	}
+	if p.pageSize < 1 {
+		p.pageSize = 10
+	}
+	return p.page, p.pageSize
 }
 
 func (p *paginatore[T]) getNextPage() int64 {
@@ -39,6 +50,7 @@ func (p *paginatore[T]) getTotalPage() int64 {
 }
 
 func (p *paginatore[T]) Paginate() ListResponse[T] {
+	p.Validate()
 	return ListResponse[T]{
 		Total:     p.total,
 		Page:      p.page,

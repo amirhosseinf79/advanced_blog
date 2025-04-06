@@ -12,8 +12,8 @@ type CommentCreateDTO struct {
 
 type CommentFilter struct {
 	PostID   uint  `json:"post_id" query:"post_id" validate:"required"`
-	Page     int64 `json:"page" query:"page" validate:"gte=1,required"`
-	PageSize int64 `json:"page_size" query:"page_size" validate:"gte=1,required"`
+	Page     int64 `json:"page" query:"page" validate:"gte=0"`
+	PageSize int64 `json:"page_size" query:"page_size" validate:"gte=0,lte=100"`
 }
 
 type CommentResponse struct {
