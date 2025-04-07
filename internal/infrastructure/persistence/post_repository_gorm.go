@@ -59,7 +59,7 @@ func (r *postRepository) GetPostsByFilter(filter dto.PostFilterDTO) (posts []*mo
 	query := r.db.Model(&models.Post{}).Preload("Author")
 
 	if filter.AuthorName != "" {
-		query = query.Joins("JOIN users ON posts.author_id = users.id").
+		query = query.Joins("JOIN \"users\" ON posts.author_id = users.id").
 			Where("LOWER(users.first_name) LIKE LOWER(?) OR LOWER(users.last_name) LIKE LOWER(?)", "%"+filter.AuthorName+"%", "%"+filter.AuthorName+"%")
 	}
 	if filter.Title != "" {
